@@ -82,31 +82,39 @@ app.get('/api/download', (req, res) => {
             '--extract-audio',
             '--audio-format', 'mp3',
             '-o', outputTemplate,
+            '--no-playlist',
             url
         ];
     } else {
         const height = quality || '720';
-
         ytArgs = [
-            '-f', `bestvideo[height<=${height}]+bestaudio/best`,
+            '-f', `bestvideo[height<=${height}][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=${height}]+bestaudio/best[height<=${height}]/best`,
             '--merge-output-format', 'mp4',
             '-o', outputTemplate,
+            '--no-playlist',
             url
         ];
     }
 
+    let errorOutput = '';
     const ytDlp = spawn('yt-dlp', ytArgs, { shell: true });
+
+    ytDlp.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+        console.log(`yt-dlp: ${data}`);
+    });
 
     ytDlp.on('close', (code) => {
         if (code !== 0) {
-            return res.status(500).json({ error: 'Download failed' });
+            console.error(`yt-dlp failed (code ${code}): ${errorOutput}`);
+            return res.status(500).json({ error: `Download failed: ${errorOutput.slice(-200)}` });
         }
 
         const files = fs.readdirSync(downloadsDir);
         const file = files.find(f => f.startsWith(id));
 
         if (!file) {
-            return res.status(500).json({ error: 'File not found' });
+            return res.status(500).json({ error: 'File not found after download' });
         }
 
         const filePath = path.join(downloadsDir, file);
