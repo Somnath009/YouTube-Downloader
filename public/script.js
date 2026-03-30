@@ -87,7 +87,8 @@ downloadBtn.addEventListener('click', async () => {
         const response = await fetch(downloadUrl);
         
         if (!response.ok) {
-            throw new Error('Server limit reached or video unavailable.');
+            const errData = await response.json().catch(() => null);
+            throw new Error(errData?.error || 'Server limit reached or video unavailable.');
         }
 
         const blob = await response.blob();

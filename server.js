@@ -27,7 +27,7 @@ app.get('/api/info', (req, res) => {
         '-j',
         '--no-playlist',
         videoUrl
-    ], { shell: true });
+    ]);
 
     let output = '';
     let errorOutput = '';
@@ -97,17 +97,24 @@ app.get('/api/download', (req, res) => {
     }
 
     let errorOutput = '';
-    const ytDlp = spawn('yt-dlp', ytArgs, { shell: true });
+    let stdOutput = '';
+    const ytDlp = spawn('yt-dlp', ytArgs);
+
+    ytDlp.stdout.on('data', (data) => {
+        stdOutput += data.toString();
+        console.log(`yt-dlp stdout: ${data}`);
+    });
 
     ytDlp.stderr.on('data', (data) => {
         errorOutput += data.toString();
-        console.log(`yt-dlp: ${data}`);
+        console.log(`yt-dlp stderr: ${data}`);
     });
 
     ytDlp.on('close', (code) => {
         if (code !== 0) {
-            console.error(`yt-dlp failed (code ${code}): ${errorOutput}`);
-            return res.status(500).json({ error: `Download failed: ${errorOutput.slice(-200)}` });
+            const fullError = (errorOutput + stdOutput).trim();
+            console.error(`yt-dlp failed (code ${code}): ${fullError}`);
+            return res.status(500).json({ error: `Download failed: ${fullError.slice(-300)}` });
         }
 
         const files = fs.readdirSync(downloadsDir);
