@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVault - YouTube Downloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <main class="container">
+        <header class="app-header">
+            <h1 class="logo">Stream<span>Vault</span></h1>
+            <p class="tagline">Download your favorite content in high quality.</p>
+        </header>
+
+        <section class="downloader-card">
+            <div class="input-group">
+                <input type="text" id="videoUrl" placeholder="Paste YouTube link here..." autocomplete="off">
+                <button id="fetchBtn" class="btn btn-primary">Analyze</button>
+            </div>
+
+            <div id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Analyzing video details...</p>
+            </div>
+
+            <div id="videoPreview" class="video-preview hidden">
+                <div class="preview-layout">
+                    <div class="thumbnail-container">
+                        <img id="videoThumb" src="" alt="Thumbnail">
+                    </div>
+                    <div class="details-container">
+                        <h2 id="videoTitle" class="video-title">Video Title</h2>
+                        <div class="video-stats">
+                            <span id="uploaderName" class="meta-item uploader">Channel</span>
+                            <span id="durationTime" class="meta-item duration">00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-options">
+                    <div class="option-group">
+                        <label>Format</label>
+                        <select id="formatSelect">
+                            <option value="mp4">Video (MP4)</option>
+                            <option value="mp3">Audio (MP3)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group" id="qualityWrapper">
+                        <label>Quality</label>
+                        <select id="qualitySelect">
+                            <option value="1080">1080p (Full HD)</option>
+                            <option value="720" selected>720p (HD)</option>
+                            <option value="480">480p</option>
+                            <option value="360">360p</option>
+                            <option value="144">144p</option>
+                        </select>
+                    </div>
+
+                    <button id="downloadBtn" class="btn btn-success btn-large">Download Now</button>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="status-message hidden">
+                <p id="statusText"></p>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 YouTube Downloader | Built for Portfolio</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
