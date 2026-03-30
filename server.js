@@ -14,7 +14,7 @@ if (!fs.existsSync(downloadsDir)) {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/info', (req, res) => {
     const videoUrl = req.query.url;
@@ -71,7 +71,7 @@ app.get('/api/download', (req, res) => {
         return res.status(400).json({ error: 'URL is required' });
     }
 
-    const id = Date.now();
+    const id = String(Date.now());
     const outputTemplate = path.join(downloadsDir, `${id}.%(ext)s`);
 
     let ytArgs = [];
@@ -123,6 +123,6 @@ app.get('/api/download', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
